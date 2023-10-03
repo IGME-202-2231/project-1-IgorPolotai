@@ -60,17 +60,17 @@ public class MovementControls : MonoBehaviour
         objectPosition += velocity;
         //transform.position = objectPosition;
 
-        if (objectPosition.x < -10) //Screen stopping
+        if (objectPosition.x < -9) //Screen stopping
         {
-            objectPosition.x = -10;
+            objectPosition.x = -9;
         }
         if (objectPosition.y < -4.3f)
         {
             objectPosition.y = -4.3f;
         }
-        if (objectPosition.x > 10)
+        if (objectPosition.x > 9)
         {
-            objectPosition.x = 10;
+            objectPosition.x = 9;
         }
         if (objectPosition.y > 4.3f)
         {
