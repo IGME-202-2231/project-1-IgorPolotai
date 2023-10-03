@@ -1,43 +1,44 @@
-# Project PROJECT_NAME
+# Project When Cows Strike Back
 
 [Markdown Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Here-Cheatsheet)
 
 ### Student Info
 
--   Name: YOUR NAME
--   Section: ##
+-   Name: Igor Polotai
+-   Section: 03/04
 
 ## Game Design
 
--   Camera Orientation: _How are the art assets viewed from? (ie. topdown or side)_
--   Camera Movement: _How does the camera move in your game? (if at all)_
--   Player Health: _How are you handling player health? (healthbar, lives, ?)_
--   End Condition: _How does a game/round/level end?_
--   Scoring: _How does the player earn points in your game?_
+-   Camera Orientation: Top Down
+-   Camera Movement: Does not move
+-   Player Health: The player will have three hit points before they lose
+-   End Condition: When you lose all hitpoints
+-   Scoring: Burgering cows
 
 ### Game Description
 
-_A brief explanation of your game. Inculde what is the objective for the player. Think about what would go on the back of a game box._
+You are an alien, but the normally docile hostages, cows, have decided to finally stand up and not be abducted so easily. Problem is, you have a quota to fill! Get those cows!
 
 ### Controls
 
 -   Movement
-    -   Up: 
-    -   Down: 
-    -   Left: 
-    -   Right: 
--   Fire: 
+    -   Up: W
+    -   Down: S
+    -   Left: A
+    -   Right: D
+-   Fire: Space
 
 ## You Additions
 
-_List out what you added to your game to make it different for you_
+I will be making the art assets (and maybe music) by myself as well
 
 ## Sources
 
--   _List all project sources here –models, textures, sound clips, assets, etc._
--   _If an asset is from the Unity store, include a link to the page and the author’s name_
+So far all assets have been made by myself
 
 ## Known Issues
+
+Github Pages hates me
 
 _List any errors, lack of error checking, or specific information that I need to know to run your program_
 
