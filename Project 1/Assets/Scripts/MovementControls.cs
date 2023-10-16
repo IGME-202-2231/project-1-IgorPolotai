@@ -22,6 +22,9 @@ public class MovementControls : MonoBehaviour
     float objectWidth;
     float objectHeight;
 
+    [SerializeField]
+    BulletManager bulletManager;
+
     private void Awake()
     {
         playerControls = new PlayerControls();
@@ -106,6 +109,9 @@ public class MovementControls : MonoBehaviour
     public void Fire(InputAction.CallbackContext context)
     {
         //shooty stuff goes here
-        Debug.Log("Fire!");
+        if (context.performed)
+        {
+            bulletManager.SpawnNewBullet(transform.position, Vector3.right);
+        }
     }
 }
