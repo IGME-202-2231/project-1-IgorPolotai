@@ -8,8 +8,13 @@ public class BulletManager : MonoBehaviour
     [SerializeField]
     GameObject bullet;
 
-    List<GameObject> bulletList = new List<GameObject>();
+    [SerializeField]
+    GameObject enemyBullet;
 
+    [SerializeField]
+    GameObject player; 
+
+    List<GameObject> bulletList = new List<GameObject>();
 
     void Start()
     {
@@ -22,10 +27,28 @@ public class BulletManager : MonoBehaviour
         {
             if (bulletList[i] != null)
             {
-                bulletList[i].transform.position += 5.0f * Time.deltaTime * bulletList[i].GetComponent<Bullet>().ShootDir;
+                bulletList[i].transform.position += 7.5f * Time.deltaTime * bulletList[i].GetComponent<Bullet>().ShootDir;
 
-                if (Enemy.AABBcheck(bulletList[i]))
+                if (bulletList[i].transform.position.x <= -13 || bulletList[i].transform.position.x >= 13)
                 {
+                    Destroy(bulletList[i]);
+                    bulletList.RemoveAt(i);
+                    i--;
+                }
+                else if (bulletList[i].GetComponent<Bullet>().FiredFromPlayer == true && EnemyManager.AABBcheck(bulletList[i]))
+                {
+                    //Happens when player bullets connect to an enemy
+                    Destroy(bulletList[i]);
+                    bulletList.RemoveAt(i);
+                    i--;
+                }
+                else if (bulletList[i].GetComponent<Bullet>().FiredFromPlayer == false &&
+                    CollisionManager.AABBCheck(
+                        bulletList[i].GetComponent<SpriteInfo>(),
+                        player.GetComponent<SpriteInfo>()
+                        ))
+                {
+                    //Happens when enemy bullets connect to a player
                     Destroy(bulletList[i]);
                     bulletList.RemoveAt(i);
                     i--;
@@ -34,13 +57,24 @@ public class BulletManager : MonoBehaviour
         }
     }
 
-    public void SpawnNewBullet(Vector3 position, Vector3 shootDir)
+    public void SpawnNewBullet(Vector3 position, Vector3 shootDir, bool firedFromPlayer)
     {
-        Debug.Log("Fire!");
-        GameObject temp = Instantiate(bullet, new Vector3(position.x, position.y, 0), Quaternion.identity);
-        temp.GetComponent<Bullet>().Setup(shootDir);
-        bulletList.Add(temp);
+        //Debug.Log("Fire!");
 
+        GameObject temp = null;
+
+        if (firedFromPlayer)
+        {
+            temp = Instantiate(bullet, new Vector3(position.x, position.y, 0), Quaternion.identity);
+        }
+        else
+        {
+            temp = Instantiate(enemyBullet, new Vector3(position.x, position.y, 0), Quaternion.identity);
+        }
+       
+        temp.GetComponent<Bullet>().Setup(shootDir, firedFromPlayer);
+        bulletList.Add(temp);        
+        
         //Transform bulletTransform = Instantiate(bullet, position, Quaternion.identity;
         //bulletTransform.GetComponent<Bullet>().Setup(Vector3.right);
     }

@@ -111,7 +111,23 @@ public class MovementControls : MonoBehaviour
         //shooty stuff goes here
         if (context.performed)
         {
-            bulletManager.SpawnNewBullet(transform.position, Vector3.right);
+            bulletManager.SpawnNewBullet(transform.position, Vector3.right, true);
         }
     }
+
+   //public bool AABBCheckPlayer(GameObject bullet)
+   //{
+   //    SpriteInfo bulletBounds = bullet.GetComponent<SpriteInfo>();
+   //    SpriteInfo playerBounds = gameObject.GetComponent<SpriteInfo>();
+   //
+   //    if (playerBounds.RectMin.x < bulletBounds.RectMax.x &&
+   //        playerBounds.RectMax.x > bulletBounds.RectMin.x &&
+   //        playerBounds.RectMax.y > bulletBounds.RectMin.y &&
+   //        playerBounds.RectMin.y < bulletBounds.RectMax.y)
+   //    {
+   //            return true;
+   //    }
+   //
+   //    return false;
+   //}
 }

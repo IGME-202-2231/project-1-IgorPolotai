@@ -6,15 +6,22 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     private Vector3 shootDir;
+    private bool firedFromPlayer;
 
     public Vector3 ShootDir
     {
         get { return shootDir; }
     } 
 
-    public void Setup(Vector3 shootDir)
+    public bool FiredFromPlayer
+    {
+        get { return firedFromPlayer; }
+    }
+
+    public void Setup(Vector3 shootDir, bool fired)
     {
         this.shootDir = shootDir;
-        Destroy(gameObject, 5.0f);
+        this.firedFromPlayer = fired;
+        //Destroy(gameObject, 5.0f);
     }
 }
