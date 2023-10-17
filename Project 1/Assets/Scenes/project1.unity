@@ -387,7 +387,7 @@ Transform:
   m_GameObject: {fileID: 1099657266}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.0901, y: 2.0901, z: 2.0901}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 2.0901}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -556,6 +556,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cow: {fileID: 4963080434118095140, guid: bf02bfb243557e940b8958685b9f4bde, type: 3}
+  cowcommando: {fileID: 3482417262477666618, guid: 3af449ef25b532a4eb86669806e4cabd, type: 3}
+  cowscout: {fileID: 176928419616407964, guid: 4994876925faa1849b91f3478a47ab6d, type: 3}
   bulletManager: {fileID: 1003760556}
 --- !u!4 &1566907009
 Transform:

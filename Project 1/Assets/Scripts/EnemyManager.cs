@@ -9,11 +9,18 @@ public class EnemyManager : MonoBehaviour
     GameObject cow;
 
     [SerializeField]
+    GameObject cowcommando;
+
+    [SerializeField]
+    GameObject cowscout;
+
+    [SerializeField]
     BulletManager bulletManager;
 
     static List<GameObject> cowList = new List<GameObject>();
     static List<Vector3> movementList = new List<Vector3>();
     static List<int> cowHealth = new List<int>(); 
+    static List<float> movementSpeed = new List<float>();
 
     // firing speed
     static List<float> fireRate = new List<float>();
@@ -31,7 +38,7 @@ public class EnemyManager : MonoBehaviour
         for (int i = 0; i < cowList.Count; i++)
         {
             //cowList[i].transform.position += Vector3.left * 3.0f * Time.deltaTime;
-            cowList[i].transform.position += movementList[i] * Time.deltaTime;
+            cowList[i].transform.position += movementList[i] * movementSpeed[i] * Time.deltaTime;
 
             if (cowList[i].transform.position.x < -13)
             {
@@ -41,6 +48,7 @@ public class EnemyManager : MonoBehaviour
                 cowHealth.RemoveAt(i);
                 fireRate.RemoveAt(i);
                 currentFire.RemoveAt(i);
+                movementSpeed.RemoveAt(i);
                 i--;
             }
             else if (currentFire[i] >= fireRate[i]) // Enemy fire logic
@@ -60,11 +68,35 @@ public class EnemyManager : MonoBehaviour
         float posX = Random.Range(12f, 14f);
         float posY = Random.Range(-4f, 4f);
 
-        cowList.Add(Instantiate(cow, new Vector3(posX, posY, 0), Quaternion.identity));
-        movementList.Add(new Vector3(Random.Range(-5.0f, -3.0f), Random.Range(-1.0f, 1.0f), 0));
-        cowHealth.Add(1);
-        fireRate.Add(Random.Range(1.0f, 3.0f));
-        currentFire.Add(0.0f);
+        int selectCow = Random.Range(0, 10);
+
+        if (selectCow < 2) //Spawns a commando cow
+        {
+            cowList.Add(Instantiate(cowcommando, new Vector3(posX, posY, 0), Quaternion.identity));
+            movementList.Add(new Vector3(Random.Range(-3.0f, -1.0f), Random.Range(-0.5f, 0.5f), 0));
+            cowHealth.Add(5);
+            fireRate.Add(Random.Range(0.5f, 2.0f));
+            currentFire.Add(0.0f);
+            movementSpeed.Add(3.0f);
+        }
+        else if (selectCow < 4) //Spawns a scout cow
+        {
+            cowList.Add(Instantiate(cowscout, new Vector3(posX, posY, 0), Quaternion.identity));
+            movementList.Add(new Vector3(Random.Range(-5.0f, -3.0f), Random.Range(-1.0f, 1.0f), 0));
+            cowHealth.Add(1);
+            fireRate.Add(1.0f);
+            currentFire.Add(0.0f);
+            movementSpeed.Add(0.2f);
+        }
+        else //Spawns a normal cow
+        {
+            cowList.Add(Instantiate(cow, new Vector3(posX, posY, 0), Quaternion.identity));
+            movementList.Add(new Vector3(Random.Range(-5.0f, -3.0f), Random.Range(-1.0f, 1.0f), 0));
+            cowHealth.Add(3);
+            fireRate.Add(Random.Range(3.0f, 5.0f));
+            currentFire.Add(2.0f);
+            movementSpeed.Add(1f);
+        }
     }
 
     public static bool AABBcheck(GameObject bullet)
@@ -75,10 +107,7 @@ public class EnemyManager : MonoBehaviour
         {
             SpriteInfo cowBounds = cowList[i].GetComponent<SpriteInfo>();
 
-            if (cowBounds.RectMin.x < bulletBounds.RectMax.x &&
-                cowBounds.RectMax.x > bulletBounds.RectMin.x &&
-                cowBounds.RectMax.y > bulletBounds.RectMin.y &&
-                cowBounds.RectMin.y < bulletBounds.RectMax.y)
+            if (CollisionManager.AABBCheck(bulletBounds, cowBounds))
             {
                 if (cowHealth[i] <= 0)
                 {
@@ -88,6 +117,7 @@ public class EnemyManager : MonoBehaviour
                     cowHealth.RemoveAt(i);
                     fireRate.RemoveAt(i);
                     currentFire.RemoveAt(i);
+                    movementSpeed.RemoveAt(i);
                     return true;
                 }
                 else
