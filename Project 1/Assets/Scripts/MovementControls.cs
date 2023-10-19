@@ -111,7 +111,7 @@ public class MovementControls : MonoBehaviour
         //shooty stuff goes here
         if (context.performed)
         {
-            bulletManager.SpawnNewBullet(transform.position, Vector3.right, true);
+            bulletManager.SpawnNewBullet(transform.position, Vector3.right, true, false);
         }
     }
 

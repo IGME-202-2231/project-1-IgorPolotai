@@ -290,6 +290,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bullet: {fileID: 7805927658787823048, guid: 46a6e905b60f002499fc049e314154a5, type: 3}
   enemyBullet: {fileID: 2583304008779830045, guid: 38d8198ab284a0e48870241fd1b25260, type: 3}
+  enemyRadioactiveBullet: {fileID: 97972384618089486, guid: 2619596818b54e047ad40dedc9b5051c, type: 3}
   player: {fileID: 1099657266}
 --- !u!4 &1003760557
 Transform:
@@ -558,7 +559,13 @@ MonoBehaviour:
   cow: {fileID: 4963080434118095140, guid: bf02bfb243557e940b8958685b9f4bde, type: 3}
   cowcommando: {fileID: 3482417262477666618, guid: 3af449ef25b532a4eb86669806e4cabd, type: 3}
   cowscout: {fileID: 176928419616407964, guid: 4994876925faa1849b91f3478a47ab6d, type: 3}
+  cowsoldier: {fileID: 4333004236899397622, guid: f46c3ca7366a81a4783299667bbcd817, type: 3}
+  cowarmor: {fileID: 6262783095980412437, guid: caa464cd361d35740a4bff3d68436eb4, type: 3}
+  cowradioactive: {fileID: 1288930344878361778, guid: 6c900fe316baf894c998aee98ebfb999, type: 3}
+  cowmedic: {fileID: 7596077975376558734, guid: 865226c689f6a0541861a96e1a684227, type: 3}
+  player: {fileID: 1099657266}
   bulletManager: {fileID: 1003760556}
+  hamburger: {fileID: 304246899556713657, guid: b0ce15c3a4351514290e64cb311801e1, type: 3}
 --- !u!4 &1566907009
 Transform:
   m_ObjectHideFlags: 0

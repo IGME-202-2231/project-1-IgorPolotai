@@ -12,6 +12,9 @@ public class BulletManager : MonoBehaviour
     GameObject enemyBullet;
 
     [SerializeField]
+    GameObject enemyRadioactiveBullet;
+
+    [SerializeField]
     GameObject player; 
 
     List<GameObject> bulletList = new List<GameObject>();
@@ -57,7 +60,7 @@ public class BulletManager : MonoBehaviour
         }
     }
 
-    public void SpawnNewBullet(Vector3 position, Vector3 shootDir, bool firedFromPlayer)
+    public void SpawnNewBullet(Vector3 position, Vector3 shootDir, bool firedFromPlayer, bool firedFromRadioactive)
     {
         //Debug.Log("Fire!");
 
@@ -66,6 +69,10 @@ public class BulletManager : MonoBehaviour
         if (firedFromPlayer)
         {
             temp = Instantiate(bullet, new Vector3(position.x, position.y, 0), Quaternion.identity);
+        }
+        else if (firedFromRadioactive)
+        {
+            temp = Instantiate(enemyRadioactiveBullet, new Vector3(position.x, position.y, 0), Quaternion.identity);
         }
         else
         {
