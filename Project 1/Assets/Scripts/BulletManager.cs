@@ -15,7 +15,11 @@ public class BulletManager : MonoBehaviour
     GameObject enemyRadioactiveBullet;
 
     [SerializeField]
-    GameObject player; 
+    GameObject player;
+
+    [SerializeField]
+    MovementControls playerMovement;
+
 
     List<GameObject> bulletList = new List<GameObject>();
 
@@ -52,6 +56,11 @@ public class BulletManager : MonoBehaviour
                         ))
                 {
                     //Happens when enemy bullets connect to a player
+
+                    if (bulletList[i].GetComponent<Bullet>().FiredFromRadioactive)
+                    {
+                        playerMovement.MovementNerf = 0.05f;
+                    }
                     Destroy(bulletList[i]);
                     bulletList.RemoveAt(i);
                     i--;
@@ -60,7 +69,7 @@ public class BulletManager : MonoBehaviour
         }
     }
 
-    public void SpawnNewBullet(Vector3 position, Vector3 shootDir, bool firedFromPlayer, bool firedFromRadioactive)
+    public void SpawnNewBullet(Vector3 position, Vector3 shootDir, float bulletSpeed, bool firedFromPlayer, bool firedFromRadioactive)
     {
         //Debug.Log("Fire!");
 
@@ -79,7 +88,7 @@ public class BulletManager : MonoBehaviour
             temp = Instantiate(enemyBullet, new Vector3(position.x, position.y, 0), Quaternion.identity);
         }
        
-        temp.GetComponent<Bullet>().Setup(shootDir, firedFromPlayer);
+        temp.GetComponent<Bullet>().Setup(shootDir, firedFromPlayer, firedFromRadioactive, bulletSpeed);
         bulletList.Add(temp);        
         
         //Transform bulletTransform = Instantiate(bullet, position, Quaternion.identity;

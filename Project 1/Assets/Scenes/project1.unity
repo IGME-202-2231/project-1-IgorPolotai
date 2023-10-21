@@ -292,6 +292,7 @@ MonoBehaviour:
   enemyBullet: {fileID: 2583304008779830045, guid: 38d8198ab284a0e48870241fd1b25260, type: 3}
   enemyRadioactiveBullet: {fileID: 97972384618089486, guid: 2619596818b54e047ad40dedc9b5051c, type: 3}
   player: {fileID: 1099657266}
+  playerMovement: {fileID: 1099657270}
 --- !u!4 &1003760557
 Transform:
   m_ObjectHideFlags: 0
@@ -565,7 +566,8 @@ MonoBehaviour:
   cowmedic: {fileID: 7596077975376558734, guid: 865226c689f6a0541861a96e1a684227, type: 3}
   player: {fileID: 1099657266}
   bulletManager: {fileID: 1003760556}
-  hamburger: {fileID: 304246899556713657, guid: b0ce15c3a4351514290e64cb311801e1, type: 3}
+  burger: {fileID: 304246899556713657, guid: b0ce15c3a4351514290e64cb311801e1, type: 3}
+  shield: {fileID: 3634866444439722603, guid: fbc9a7a26288bf54189449a2a833c9db, type: 3}
 --- !u!4 &1566907009
 Transform:
   m_ObjectHideFlags: 0

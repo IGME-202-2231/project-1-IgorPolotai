@@ -9,6 +9,14 @@ public class SpriteInfo : MonoBehaviour
     [SerializeField]
     Vector2 rectSize = Vector2.one;
 
+    bool hasAShield = false;
+
+    public bool HasAShield
+    {
+        get { return hasAShield; }
+        set { hasAShield = value; }
+    }
+
     public Vector2 RectMin
     {
         get { return (Vector2)transform.position - (rectSize / 2); }

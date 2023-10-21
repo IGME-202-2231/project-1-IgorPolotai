@@ -25,6 +25,20 @@ public class MovementControls : MonoBehaviour
     [SerializeField]
     BulletManager bulletManager;
 
+    float movementNerf = 1.0f;
+
+    public float MovementNerf
+    {
+        get { return movementNerf; }
+        set
+        {
+            if (movementNerf >= 0.20f)
+            {
+                movementNerf -= value;
+            }
+        }
+    }
+
     private void Awake()
     {
         playerControls = new PlayerControls();
@@ -59,21 +73,21 @@ public class MovementControls : MonoBehaviour
     void Update()
     {
         direction = move.ReadValue<Vector2>();
-        velocity = speed * Time.deltaTime * direction;
+        velocity = speed * Time.deltaTime * direction * movementNerf;
         objectPosition += velocity;
         //transform.position = objectPosition;
 
-        if (objectPosition.x < -9) //Screen stopping
+        if (objectPosition.x < -10.6f) //Screen stopping
         {
-            objectPosition.x = -9;
+            objectPosition.x = -10.6f;
         }
         if (objectPosition.y < -4.3f)
         {
             objectPosition.y = -4.3f;
         }
-        if (objectPosition.x > 9)
+        if (objectPosition.x > 10.6f)
         {
-            objectPosition.x = 9;
+            objectPosition.x = 10.6f;
         }
         if (objectPosition.y > 4.3f)
         {
@@ -111,23 +125,23 @@ public class MovementControls : MonoBehaviour
         //shooty stuff goes here
         if (context.performed)
         {
-            bulletManager.SpawnNewBullet(transform.position, Vector3.right, true, false);
+            bulletManager.SpawnNewBullet(transform.position, Vector3.right, 7.5f, true, false);
         }
     }
 
-   //public bool AABBCheckPlayer(GameObject bullet)
-   //{
-   //    SpriteInfo bulletBounds = bullet.GetComponent<SpriteInfo>();
-   //    SpriteInfo playerBounds = gameObject.GetComponent<SpriteInfo>();
-   //
-   //    if (playerBounds.RectMin.x < bulletBounds.RectMax.x &&
-   //        playerBounds.RectMax.x > bulletBounds.RectMin.x &&
-   //        playerBounds.RectMax.y > bulletBounds.RectMin.y &&
-   //        playerBounds.RectMin.y < bulletBounds.RectMax.y)
-   //    {
-   //            return true;
-   //    }
-   //
-   //    return false;
-   //}
+    //public bool AABBCheckPlayer(GameObject bullet)
+    //{
+    //    SpriteInfo bulletBounds = bullet.GetComponent<SpriteInfo>();
+    //    SpriteInfo playerBounds = gameObject.GetComponent<SpriteInfo>();
+    //
+    //    if (playerBounds.RectMin.x < bulletBounds.RectMax.x &&
+    //        playerBounds.RectMax.x > bulletBounds.RectMin.x &&
+    //        playerBounds.RectMax.y > bulletBounds.RectMin.y &&
+    //        playerBounds.RectMin.y < bulletBounds.RectMax.y)
+    //    {
+    //            return true;
+    //    }
+    //
+    //    return false;
+    //}
 }
