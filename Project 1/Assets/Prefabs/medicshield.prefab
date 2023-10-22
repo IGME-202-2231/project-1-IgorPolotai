@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8780733869521188768}
   - component: {fileID: 3808014046830668770}
   - component: {fileID: -1155548271692886882}
+  - component: {fileID: -1716308909409821036}
   m_Layer: 0
   m_Name: medicshield
   m_TagString: Untagged
@@ -98,3 +99,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rectSize: {x: 1, y: 1}
+--- !u!114 &-1716308909409821036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3634866444439722603}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66767434bd304c14d94ebd324e3c504f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

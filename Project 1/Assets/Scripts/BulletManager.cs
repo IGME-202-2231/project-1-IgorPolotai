@@ -20,6 +20,9 @@ public class BulletManager : MonoBehaviour
     [SerializeField]
     MovementControls playerMovement;
 
+    [SerializeField]
+    EnemyManager manager;
+
 
     List<GameObject> bulletList = new List<GameObject>();
 
@@ -42,7 +45,7 @@ public class BulletManager : MonoBehaviour
                     bulletList.RemoveAt(i);
                     i--;
                 }
-                else if (bulletList[i].GetComponent<Bullet>().FiredFromPlayer == true && EnemyManager.AABBcheck(bulletList[i]))
+                else if (bulletList[i].GetComponent<Bullet>().FiredFromPlayer == true && manager.AABBcheck(bulletList[i]))
                 {
                     //Happens when player bullets connect to an enemy
                     Destroy(bulletList[i]);
@@ -60,6 +63,7 @@ public class BulletManager : MonoBehaviour
                     if (bulletList[i].GetComponent<Bullet>().FiredFromRadioactive)
                     {
                         playerMovement.MovementNerf = 0.05f;
+                        manager.SpawnWarning(player.transform.position.x, player.transform.position.y);
                     }
                     Destroy(bulletList[i]);
                     bulletList.RemoveAt(i);

@@ -11,10 +11,18 @@ public class SpriteInfo : MonoBehaviour
 
     bool hasAShield = false;
 
+    Shield currentShield = null;
+
     public bool HasAShield
     {
         get { return hasAShield; }
         set { hasAShield = value; }
+    }
+
+    public Shield CurrentShield
+    {
+        get { return currentShield; }
+        set { currentShield = value; }
     }
 
     public Vector2 RectMin
