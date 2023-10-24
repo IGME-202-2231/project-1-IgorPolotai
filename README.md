@@ -35,13 +35,13 @@ The player starts with 10 health. Colliding with an enemy bullet or enemy decrea
 
 ## Enemies
 
-Cow: Basic cow. Slow fire speed. Has one health.
-Soldier Cow: Stronger cow. Faster fire speed. Has three health.
-Commando Cow: Stronger soldier cow. Even faster fire speed. Has five health.
-Scout Cow: Shoots at your location, with a slow firing speed. Has one health.
-Armor Cow: Slow movement and fire speed, but can take a lot of health. Has thirteen health.
-Radioactive Cow: Fires green bullets, that if hit, will cause the player to be permenantly slowed by 5%. Does not decrease health.
-The (Milk) Tank: Final Boss. Fires triple bullets, and will stay on one side of the screen. Has a massive one hundread health. If killed, game ends.
+- Cow: Basic cow. Slow fire speed. Has one health.
+- Soldier Cow: Stronger cow. Faster fire speed. Has three health.
+- Commando Cow: Stronger soldier cow. Even faster fire speed. Has five health.
+- Scout Cow: Shoots at your location, with a slow firing speed. Has one health.
+- Armor Cow: Slow movement and fire speed, but can take a lot of health. Has thirteen health.
+- Radioactive Cow: Fires green bullets, that if hit, will cause the player to be permenantly slowed by 5%. Does not decrease health.
+- The (Milk) Tank: Final Boss. Fires triple bullets, and will stay on one side of the screen. Has a massive one hundread health. If killed, game ends.
 
 Enemies are spawned based on waves. There are six waves. Each wave starts every sixty seconds. The Boss spawns after five minutes.
 
