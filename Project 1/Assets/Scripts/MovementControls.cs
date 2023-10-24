@@ -23,7 +23,16 @@ public class MovementControls : MonoBehaviour
     float objectHeight;
 
     [SerializeField]
+    GameObject infoScreen;
+
+    GameObject info = null;
+    bool check = true;
+
+    [SerializeField]
     BulletManager bulletManager;
+
+    [SerializeField]
+    EnemyManager enemyManager;
 
     float movementNerf = 1.0f;
 
@@ -67,6 +76,9 @@ public class MovementControls : MonoBehaviour
         screenBounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 0));
         objectWidth = transform.GetComponent<SpriteRenderer>().bounds.size.x / 2;
         objectWidth = transform.GetComponent<SpriteRenderer>().bounds.size.y / 2;
+
+        info = Instantiate(infoScreen, new Vector3(0, 0, 0), Quaternion.identity);
+        Time.timeScale = 0;
     }
 
     // Update is called once per frame
@@ -77,17 +89,17 @@ public class MovementControls : MonoBehaviour
         objectPosition += velocity;
         //transform.position = objectPosition;
 
-        if (objectPosition.x < -10.6f) //Screen stopping
+        if (objectPosition.x < -8.0f) //Screen stopping
         {
-            objectPosition.x = -10.6f;
+            objectPosition.x = -8.0f;
         }
         if (objectPosition.y < -4.3f)
         {
             objectPosition.y = -4.3f;
         }
-        if (objectPosition.x > 10.6f)
+        if (objectPosition.x > 8.0f)
         {
-            objectPosition.x = 10.6f;
+          objectPosition.x = 8.0f;
         }
         if (objectPosition.y > 4.3f)
         {
@@ -123,9 +135,31 @@ public class MovementControls : MonoBehaviour
     public void Fire(InputAction.CallbackContext context)
     {
         //shooty stuff goes here
+
+        if (check && Time.timeScale == 0)
+        {
+            if (info != null)
+            {
+                Destroy(info);
+
+            }
+
+            check = false;
+            Time.timeScale = 1;
+            //enemyManager.Reset();
+        }
         if (context.performed)
         {
             bulletManager.SpawnNewBullet(transform.position, Vector3.right, 7.5f, true, false);
+        }
+    }
+
+    public void Fire2(InputAction.CallbackContext context)
+    {
+        //shooty stuff goes here
+        if (context.performed)
+        {
+            enemyManager.UseCharge();
         }
     }
 

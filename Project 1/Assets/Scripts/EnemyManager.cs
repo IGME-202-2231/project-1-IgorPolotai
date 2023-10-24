@@ -44,6 +44,15 @@ public class EnemyManager : MonoBehaviour
     [SerializeField]
     GameObject shield;
 
+    [SerializeField]
+    GameObject htext;
+
+    [SerializeField]
+    GameObject wtext;
+
+    [SerializeField]
+    GameObject chargeNote;
+
     List<GameObject> cowList = new List<GameObject>();
     List<string> cowNames = new List<string>();
     List<Vector3> movementList = new List<Vector3>();
@@ -72,9 +81,18 @@ public class EnemyManager : MonoBehaviour
     int currentWave = 1;
     bool bossEntrance = true;
 
+    TextMeshProUGUI healthText;
+    TextMeshProUGUI resultText;
+    int health = 10;
+    int charge = 100;
+    bool displayCharge = true;
+    int score = 0;
+
     // Start is called before the first frame update
     void Start()
     {
+        healthText = htext.GetComponent<TextMeshProUGUI>();
+        resultText = wtext.GetComponent<TextMeshProUGUI>();
         UpdateDifficulty(currentWave);
     }
 
@@ -141,9 +159,9 @@ public class EnemyManager : MonoBehaviour
 
             //boss logic
 
-            if (cowNames[i] == "boss") 
+            if (cowNames[i] == "boss")
             {
-                if (bossEntrance && cowList[i].transform.position.x < 10)
+                if (bossEntrance && cowList[i].transform.position.x < 7)
                 {
                     movementList[i] = new Vector3(0, 3, 0);
                     bossEntrance = false;
@@ -167,12 +185,13 @@ public class EnemyManager : MonoBehaviour
             }
             else if (cowNames[i] != "boss" && CollisionManager.AABBCheck(cowList[i].GetComponent<SpriteInfo>(), player.GetComponent<SpriteInfo>()))
             {
+                UpdateUI(true);
                 DestroyEnemy(i, true);
                 i--;
             }
             else if (currentFire[i] >= fireRate[i]) // Enemy fire logic
             {
-                if (cowNames[i] == "armor")
+                if (cowNames[i] == "scout")
                 {
                     Vector2 armorShootDir = new Vector2(player.transform.position.x - cowList[i].transform.position.x,
                                                         player.transform.position.y - cowList[i].transform.position.y);
@@ -184,9 +203,10 @@ public class EnemyManager : MonoBehaviour
                 }
                 else if (cowNames[i] == "boss")
                 {
-                    bulletManager.SpawnNewBullet(cowList[i].transform.position, (new Vector3(-2, Random.Range(-0.5f, 0.5f), 0)).normalized, bulletSpeed[i], false, false);
-                    bulletManager.SpawnNewBullet(cowList[i].transform.position, (new Vector3(-2, Random.Range(-0.5f, 0.5f), 0)).normalized, bulletSpeed[i], false, false);
-                    bulletManager.SpawnNewBullet(cowList[i].transform.position, (new Vector3(-2, Random.Range(-0.5f, 0.5f), 0)).normalized, bulletSpeed[i], false, false);
+                    float temp = Random.Range(-0.5f, 0.5f);
+                    bulletManager.SpawnNewBullet(cowList[i].transform.position, (new Vector3(-2, temp + 0.1f, 0)).normalized, bulletSpeed[i], false, false);
+                    bulletManager.SpawnNewBullet(cowList[i].transform.position, (new Vector3(-2, temp, 0)).normalized, bulletSpeed[i], false, false);
+                    bulletManager.SpawnNewBullet(cowList[i].transform.position, (new Vector3(-2, temp - 0.1f, 0)).normalized, bulletSpeed[i], false, false);
                 }
                 else
                 {
@@ -200,6 +220,76 @@ public class EnemyManager : MonoBehaviour
                 currentFire[i] += Time.deltaTime;
             }
         }
+    }
+
+    public void UpdateUI(bool healthLost)
+    {
+        if (healthLost)
+        {
+            health--;
+        }
+
+        if (health <= 0)
+        {
+            Time.timeScale = 0;
+            resultText.text = "You Lose";
+        }
+
+        if (charge >= 100)
+        {
+            healthText.text = "Health: " + health + "\n" +
+                   "Charge: Ready!" + "\n"+
+                   "Score: " + score;
+        }
+        else
+        {
+            healthText.text = "Health Lost: " + health + "\n" +
+                              "Charge: " + charge + "%" + "\n" +
+                              "Score: " + score;
+        }
+
+    }
+
+    public void UpdateCharge(string name)
+    {
+        if (name == "cow")
+        {
+            charge += 2;
+            score += 2;
+        }
+        else if (name == "soldier")
+        {
+            charge += 4;
+            score += 4;
+        }
+        else if (name == "commando")
+        {
+            charge += 6;
+            score += 6;
+        }
+        else if (name == "scout")
+        {
+            charge += 5;
+            score += 5;
+        }
+        else if (name == "armor")
+        {
+            charge += 10;
+            score += 10;
+        }
+        else if (name == "radioactive")
+        {
+            charge += 8;
+            score += 8;
+        }
+
+        if (displayCharge && charge >= 100)
+        {
+            displayCharge = false;
+            SpawnWarning(player.transform.position.x, player.transform.position.y, 1);
+        }
+
+        UpdateUI(false);
     }
 
     public void UpdateDifficulty(int waveNumber)
@@ -249,7 +339,7 @@ public class EnemyManager : MonoBehaviour
                 //rad: 10%
 
                 spawnRates = new List<float> { 0.3f, 0.5f, 0.7f, 0.8f, 0.9f };
-                InvokeRepeating("SpawnNewEnemy", 0, 6.0f);
+                InvokeRepeating("SpawnNewEnemy", 0, 8.0f);
                 break;
             case 5:
                 //cow: 10%
@@ -263,19 +353,41 @@ public class EnemyManager : MonoBehaviour
                 InvokeRepeating("SpawnNewEnemy", 0, 12.00f);
                 break;
             case 6:
-                //cow: 5%
+                //cow: 10%
                 //sol: 20%
-                //cmd: 40%
+                //cmd: 30%
                 //sct: 15%
                 //arm: 10%
-                //rad: 10%
+                //rad: 15%
 
                 //boss: 100%
 
-                spawnRates = new List<float> { 0.05f, 0.25f, 0.65f, 0.8f, 0.9f };
+                spawnRates = new List<float> { 0.1f, 0.3f, 0.6f, 0.75f, 0.85f };
                 InvokeRepeating("SpawnNewEnemy", 0, 25.00f);
                 SpawnBoss();
                 break;
+        }
+    }
+
+    public void UseCharge()
+    {
+        if (charge >= 100)
+        {
+            displayCharge = true;
+
+            charge = 0;
+
+            for (int i = 0; i < cowList.Count; i++)
+            {
+                if (cowNames[i] != "boss")
+                {
+                    DestroyEnemy(i, true);
+                    i--;
+                }
+            }
+
+            bulletManager.DestroyAllBullets();
+            UpdateUI(false);
         }
     }
 
@@ -318,14 +430,14 @@ public class EnemyManager : MonoBehaviour
         float posX = Random.Range(13f, 15f);
         float posY = Random.Range(-3f, 3f);
 
-        cowList.Add(Instantiate(cowboss, new Vector3(posX, posY, 0), Quaternion.identity)); 
+        cowList.Add(Instantiate(cowboss, new Vector3(posX, posY, 0), Quaternion.identity));
         cowNames.Add("boss");
-        movementList.Add(new Vector3(-3, 0, 0)); 
+        movementList.Add(new Vector3(-3, 0, 0));
         cowHealth.Add(100);
-        fireRate.Add(1.25f); 
-        currentFire.Add(-2.0f); 
+        fireRate.Add(1.25f);
+        currentFire.Add(-2.0f);
         movementSpeed.Add(1f);
-        bulletSpeed.Add(12.0f); 
+        bulletSpeed.Add(12.0f);
     }
 
     public void SpawnNewEnemy()
@@ -374,7 +486,7 @@ public class EnemyManager : MonoBehaviour
             cowNames.Add("scout");
             movementList.Add(new Vector3(Random.Range(-5.0f, -3.0f), Random.Range(-1.0f, 1.0f), 0));
             cowHealth.Add(1);
-            fireRate.Add(1.0f);
+            fireRate.Add(1.5f);
             currentFire.Add(0.0f);
             movementSpeed.Add(0.2f);
             bulletSpeed.Add(4.0f);
@@ -443,6 +555,7 @@ public class EnemyManager : MonoBehaviour
             {
                 if (cowHealth[i] <= 0)
                 {
+                    UpdateCharge(cowNames[i]);
                     DestroyEnemy(i, true);
                     return true;
                 }
@@ -463,9 +576,18 @@ public class EnemyManager : MonoBehaviour
         burgerVectors.Add(new Vector3(0, 5, 0));
     }
 
-    public void SpawnWarning(float x, float y)
+    public void SpawnWarning(float x, float y, int i)
     {
-        warningList.Add(Instantiate(warning, new Vector3(x, y, 0), Quaternion.identity));
+        switch (i)
+        {
+            case 0:
+                warningList.Add(Instantiate(warning, new Vector3(x, y, -1), Quaternion.identity));
+                break;
+            case 1:
+                warningList.Add(Instantiate(chargeNote, new Vector3(x, y, -1), Quaternion.identity));
+                break;
+        }
+
     }
 
     public void SpawnShield()
@@ -577,6 +699,12 @@ public class EnemyManager : MonoBehaviour
             SpawnHamburger(cowList[i].transform.position.x, cowList[i].transform.position.y);
         }
 
+        if (cowNames[i] == "boss")
+        {
+            Time.timeScale = 0;
+            resultText.text = "You Win!!!";
+        }
+
         if (cowList[i] != null && cowNames[i] == "medic")
         {
             for (int j = 0; j < cowList.Count; j++)
@@ -653,6 +781,27 @@ public class EnemyManager : MonoBehaviour
         currentFire.RemoveAt(i);
         movementSpeed.RemoveAt(i);
         bulletSpeed.RemoveAt(i);
+    }
+
+    public void Reset()
+    {
+        resultText.text = "";
+        score = 0;
+        charge = 100;
+        gameTimer = 300.0f;
+        currentWave = 1;
+        bossEntrance = true;
+        displayCharge = true;
+        health = 10;
+        rotation = 0.0f;
+
+        foreach (GameObject item in cowList)
+        {
+            DestroyEnemy(0, false);
+        }
+
+        bulletManager.DestroyAllBullets();
+
     }
 
 }

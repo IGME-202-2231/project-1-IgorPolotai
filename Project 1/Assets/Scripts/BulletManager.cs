@@ -63,7 +63,11 @@ public class BulletManager : MonoBehaviour
                     if (bulletList[i].GetComponent<Bullet>().FiredFromRadioactive)
                     {
                         playerMovement.MovementNerf = 0.05f;
-                        manager.SpawnWarning(player.transform.position.x, player.transform.position.y);
+                        manager.SpawnWarning(player.transform.position.x, player.transform.position.y, 0);
+                    }
+                    else
+                    {
+                        manager.UpdateUI(true);
                     }
                     Destroy(bulletList[i]);
                     bulletList.RemoveAt(i);
@@ -97,5 +101,14 @@ public class BulletManager : MonoBehaviour
         
         //Transform bulletTransform = Instantiate(bullet, position, Quaternion.identity;
         //bulletTransform.GetComponent<Bullet>().Setup(Vector3.right);
+    }
+
+    public void DestroyAllBullets()
+    {
+        while (bulletList.Count > 0)
+        {
+            Destroy(bulletList[0]);
+            bulletList.RemoveAt(0);
+        }
     }
 }
