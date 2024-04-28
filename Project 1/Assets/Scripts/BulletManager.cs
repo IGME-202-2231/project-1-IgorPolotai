@@ -39,7 +39,7 @@ public class BulletManager : MonoBehaviour
             {
                 bulletList[i].transform.position += 7.5f * Time.deltaTime * bulletList[i].GetComponent<Bullet>().ShootDir;
 
-                if (bulletList[i].transform.position.x <= -13 || bulletList[i].transform.position.x >= 13)
+                if (bulletList[i].transform.position.y <= -7.0f || bulletList[i].transform.position.y >= 7.0f)
                 {
                     Destroy(bulletList[i]);
                     bulletList.RemoveAt(i);

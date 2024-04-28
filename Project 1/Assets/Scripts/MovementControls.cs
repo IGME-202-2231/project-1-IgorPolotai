@@ -150,7 +150,7 @@ public class MovementControls : MonoBehaviour
         }
         if (context.performed)
         {
-            bulletManager.SpawnNewBullet(transform.position, Vector3.right, 7.5f, true, false);
+            bulletManager.SpawnNewBullet(transform.position, Vector3.up, 7.5f, true, false);
         }
     }
 

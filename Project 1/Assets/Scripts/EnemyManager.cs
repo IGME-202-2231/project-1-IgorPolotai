@@ -78,12 +78,12 @@ public class EnemyManager : MonoBehaviour
     List<float> spawnRates = new List<float>();
     List<bool> spawnCheck = new List<bool> { true, true, true, true, true };
     float gameTimer = 300.0f;
-    int currentWave = 1;
+    int currentWave = 6; //STARTS AT 1
     bool bossEntrance = true;
 
     TextMeshProUGUI healthText;
     TextMeshProUGUI resultText;
-    int health = 10;
+    int health = 1000; //ORIGINALLY 10 SET IT BACK AFTER
     int charge = 100;
     bool displayCharge = true;
     int score = 0;
@@ -144,7 +144,7 @@ public class EnemyManager : MonoBehaviour
             deathBurgers[i].transform.eulerAngles = Vector3.forward * rotation;
             burgerVectors[i] += (gravity * Time.deltaTime);
 
-            if (deathBurgers[i].transform.position.y < -10)
+            if (deathBurgers[i].transform.position.y < -7.0f)
             {
                 Destroy(deathBurgers[i]);
                 deathBurgers.RemoveAt(i);
@@ -161,24 +161,28 @@ public class EnemyManager : MonoBehaviour
 
             if (cowNames[i] == "boss")
             {
-                if (bossEntrance && cowList[i].transform.position.x < 7)
-                {
-                    movementList[i] = new Vector3(0, 3, 0);
-                    bossEntrance = false;
-                }
-                if (cowList[i].transform.position.y < -4.0f)
-                {
-                    movementList[i] = new Vector3(0, 3, 0);
-                }
-                else if (cowList[i].transform.position.y > 4.0f)
+                if (bossEntrance && cowList[i].transform.position.y > 4)
                 {
                     movementList[i] = new Vector3(0, -3, 0);
                 }
+                else if (bossEntrance && cowList[i].transform.position.y <= 4)
+                {
+                    movementList[i] = new Vector3(-3, 0, 0);
+                    bossEntrance = false;
+                }
+                if (cowList[i].transform.position.x < -2.5f)
+                {
+                    movementList[i] = new Vector3(3, 0, 0);
+                }
+                else if (cowList[i].transform.position.x > 2.5f)
+                {
+                    movementList[i] = new Vector3(-3, 0, 0);
+                }
             }
 
-            if (cowList[i].transform.position.x < -13 ||
-                cowList[i].transform.position.y < -6.5f ||
-                cowList[i].transform.position.y > 6.5)
+            if (cowList[i].transform.position.y < -7.0f ||
+                cowList[i].transform.position.x < -4.0f ||
+                cowList[i].transform.position.x > 4.0f)
             {
                 DestroyEnemy(i, false);
                 i--;
@@ -199,18 +203,18 @@ public class EnemyManager : MonoBehaviour
                 }
                 else if (cowNames[i] == "radioactive")
                 {
-                    bulletManager.SpawnNewBullet(cowList[i].transform.position, Vector3.left, bulletSpeed[i], false, true);
+                    bulletManager.SpawnNewBullet(cowList[i].transform.position, Vector3.down, bulletSpeed[i], false, true);
                 }
                 else if (cowNames[i] == "boss")
                 {
                     float temp = Random.Range(-0.5f, 0.5f);
-                    bulletManager.SpawnNewBullet(cowList[i].transform.position, (new Vector3(-2, temp + 0.1f, 0)).normalized, bulletSpeed[i], false, false);
-                    bulletManager.SpawnNewBullet(cowList[i].transform.position, (new Vector3(-2, temp, 0)).normalized, bulletSpeed[i], false, false);
-                    bulletManager.SpawnNewBullet(cowList[i].transform.position, (new Vector3(-2, temp - 0.1f, 0)).normalized, bulletSpeed[i], false, false);
+                    bulletManager.SpawnNewBullet(cowList[i].transform.position, (new Vector3(temp + 0.1f, -2, 0)).normalized, bulletSpeed[i], false, false);
+                    bulletManager.SpawnNewBullet(cowList[i].transform.position, (new Vector3(temp, -2, 0)).normalized, bulletSpeed[i], false, false);
+                    bulletManager.SpawnNewBullet(cowList[i].transform.position, (new Vector3(temp - 0.1f, -2, 0)).normalized, bulletSpeed[i], false, false);
                 }
                 else
                 {
-                    bulletManager.SpawnNewBullet(cowList[i].transform.position, Vector3.left, bulletSpeed[i], false, false);
+                    bulletManager.SpawnNewBullet(cowList[i].transform.position, Vector3.down, bulletSpeed[i], false, false);
                 }
 
                 currentFire[i] = 0.0f;
@@ -427,23 +431,23 @@ public class EnemyManager : MonoBehaviour
 
     public void SpawnBoss()
     {
-        float posX = Random.Range(13f, 15f);
-        float posY = Random.Range(-3f, 3f);
+        float posX = Random.Range(-2.5f, 2.5f);
+        float posY = Random.Range(5.5f, 6.0f);
 
         cowList.Add(Instantiate(cowboss, new Vector3(posX, posY, 0), Quaternion.identity));
         cowNames.Add("boss");
-        movementList.Add(new Vector3(-3, 0, 0));
+        movementList.Add(new Vector3(0, -3, 0));
         cowHealth.Add(100);
         fireRate.Add(1.25f);
         currentFire.Add(-2.0f);
         movementSpeed.Add(1f);
-        bulletSpeed.Add(12.0f);
+        bulletSpeed.Add(6.0f);
     }
 
     public void SpawnNewEnemy()
     {
-        float posX = Random.Range(12f, 14f);
-        float posY = Random.Range(-4f, 4f);
+        float posX = Random.Range(-2.5f, 2.5f);
+        float posY = Random.Range(5.5f, 6.0f);
 
         float selectCow = Random.value; //Old values: 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1.0f
 
@@ -451,67 +455,67 @@ public class EnemyManager : MonoBehaviour
         {
             cowList.Add(Instantiate(cow, new Vector3(posX, posY, 0), Quaternion.identity)); //creates cow, chooses random location offscreen
             cowNames.Add("cow");
-            movementList.Add(new Vector3(Random.Range(-3.0f, -2.0f), Random.Range(-1.0f, 1.0f), 0)); //chooses vector of movement. Increase y to give bigger angles
+            movementList.Add(new Vector3(Random.Range(-1.0f, 1.0f), Random.Range(-3.0f, -2.0f), 0)); //chooses vector of movement. Increase y to give bigger angles
             cowHealth.Add(1); //Each bullet does two damage
             fireRate.Add(Random.Range(3.0f, 5.0f)); //How frequently each cow shoots
             currentFire.Add(2.0f); //How quickly the cow starts to shoot
-            movementSpeed.Add(1f); //The multiplier for speed
-            bulletSpeed.Add(7.5f); //The speed of the enemy's bullets
+            movementSpeed.Add(0.5f); //The multiplier for speed
+            bulletSpeed.Add(4.75f); //The speed of the enemy's bullets
         }
         else if (selectCow < spawnRates[1]) //Spawns a soldier cow
         {
             cowList.Add(Instantiate(cowsoldier, new Vector3(posX, posY, 0), Quaternion.identity));
             cowNames.Add("soldier");
-            movementList.Add(new Vector3(Random.Range(-3.25f, -2.5f), Random.Range(-0.75f, 0.75f), 0));
+            movementList.Add(new Vector3(Random.Range(-0.75f, 0.75f), Random.Range(-3.25f, -2.5f), 0));
             cowHealth.Add(3);
             fireRate.Add(Random.Range(1f, 4.0f));
             currentFire.Add(2.0f);
-            movementSpeed.Add(2f);
-            bulletSpeed.Add(8.0f);
+            movementSpeed.Add(1.0f);
+            bulletSpeed.Add(4.0f);
         }
         else if (selectCow < spawnRates[2]) //Spawns a commando cow
         {
             cowList.Add(Instantiate(cowcommando, new Vector3(posX, posY, 0), Quaternion.identity));
             cowNames.Add("commando");
-            movementList.Add(new Vector3(Random.Range(-3.5f, -3.0f), Random.Range(-0.5f, 0.5f), 0));
+            movementList.Add(new Vector3(Random.Range(-0.5f, 0.5f), Random.Range(-3.5f, -3.0f), 0));
             cowHealth.Add(5);
             fireRate.Add(Random.Range(0.5f, 2.0f));
             currentFire.Add(2.0f);
-            movementSpeed.Add(3.0f);
-            bulletSpeed.Add(8.5f);
+            movementSpeed.Add(1.5f);
+            bulletSpeed.Add(4.25f);
         }
         else if (selectCow < spawnRates[3]) //Spawns a scout cow
         {
             cowList.Add(Instantiate(cowscout, new Vector3(posX, posY, 0), Quaternion.identity));
             cowNames.Add("scout");
-            movementList.Add(new Vector3(Random.Range(-5.0f, -3.0f), Random.Range(-1.0f, 1.0f), 0));
+            movementList.Add(new Vector3(Random.Range(-1.0f, 1.0f), Random.Range(-5.0f, -3.0f), 0));
             cowHealth.Add(1);
             fireRate.Add(1.5f);
             currentFire.Add(0.0f);
             movementSpeed.Add(0.2f);
-            bulletSpeed.Add(4.0f);
+            bulletSpeed.Add(2.0f);
         }
         else if (selectCow < spawnRates[4]) //Spawns an armor cow
         {
             cowList.Add(Instantiate(cowarmor, new Vector3(posX, posY, 0), Quaternion.identity));
             cowNames.Add("armor");
-            movementList.Add(new Vector3(-2.0f, Random.Range(-0.25f, 0.25f), 0));
+            movementList.Add(new Vector3(Random.Range(-0.25f, 0.25f), -2.0f, 0));
             cowHealth.Add(13);
             fireRate.Add(Random.Range(1.0f, 3.0f));
             currentFire.Add(0.75f);
-            movementSpeed.Add(1.0f);
+            movementSpeed.Add(0.5f);
             bulletSpeed.Add(0.1f);
         }
         else //Spawns a radioactive cow
         {
             cowList.Add(Instantiate(cowradioactive, new Vector3(posX, posY, 0), Quaternion.identity));
             cowNames.Add("radioactive");
-            movementList.Add(new Vector3(Random.Range(-5.0f, -3.0f), Random.Range(-1.0f, 1.0f), 0));
+            movementList.Add(new Vector3(Random.Range(-1.0f, 1.0f), Random.Range(-5.0f, -3.0f), 0));
             cowHealth.Add(5);
             fireRate.Add(4.0f);
             currentFire.Add(2.5f);
             movementSpeed.Add(0.75f);
-            bulletSpeed.Add(5.0f);
+            bulletSpeed.Add(2.5f);
         }
         //  else //Spawns a medic cow
         //{
