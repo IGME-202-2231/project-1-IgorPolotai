@@ -89,21 +89,21 @@ public class MovementControls : MonoBehaviour
         objectPosition += velocity;
         //transform.position = objectPosition;
 
-        if (objectPosition.x < -8.0f) //Screen stopping
+        if (objectPosition.x < -1.8f) //Screen stopping
         {
-            objectPosition.x = -8.0f;
+            objectPosition.x = -1.8f;
         }
-        if (objectPosition.y < -4.3f)
+        if (objectPosition.y < -4.7f)
         {
-            objectPosition.y = -4.3f;
+            objectPosition.y = -4.7f;
         }
-        if (objectPosition.x > 8.0f)
+        if (objectPosition.x > 1.8f)
         {
-          objectPosition.x = 8.0f;
+          objectPosition.x = 1.8f;
         }
-        if (objectPosition.y > 4.3f)
+        if (objectPosition.y > 4.7f)
         {
-            objectPosition.y = 4.3f;
+            objectPosition.y = 4.7f;
         }
 
         transform.position = objectPosition;

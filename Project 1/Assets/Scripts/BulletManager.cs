@@ -37,7 +37,7 @@ public class BulletManager : MonoBehaviour
         {
             if (bulletList[i] != null)
             {
-                bulletList[i].transform.position += 7.5f * Time.deltaTime * bulletList[i].GetComponent<Bullet>().ShootDir;
+                bulletList[i].transform.position += Time.deltaTime * bulletList[i].GetComponent<Bullet>().ShootDir * bulletList[i].GetComponent<Bullet>().BulletSpeed;
 
                 if (bulletList[i].transform.position.y <= -7.0f || bulletList[i].transform.position.y >= 7.0f)
                 {

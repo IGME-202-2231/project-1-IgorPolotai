@@ -53,6 +53,9 @@ public class EnemyManager : MonoBehaviour
     [SerializeField]
     GameObject chargeNote;
 
+    [SerializeField]
+    GameObject damagedNote;
+
     List<GameObject> cowList = new List<GameObject>();
     List<string> cowNames = new List<string>();
     List<Vector3> movementList = new List<Vector3>();
@@ -77,13 +80,13 @@ public class EnemyManager : MonoBehaviour
 
     List<float> spawnRates = new List<float>();
     List<bool> spawnCheck = new List<bool> { true, true, true, true, true };
-    float gameTimer = 300.0f;
-    int currentWave = 6; //STARTS AT 1
+    float gameTimer = 180.0f;
+    int currentWave = 1; //STARTS AT 1
     bool bossEntrance = true;
 
     TextMeshProUGUI healthText;
     TextMeshProUGUI resultText;
-    int health = 1000; //ORIGINALLY 10 SET IT BACK AFTER
+    int health = 10; //ORIGINALLY 10 SET IT BACK AFTER
     int charge = 100;
     bool displayCharge = true;
     int score = 0;
@@ -140,7 +143,7 @@ public class EnemyManager : MonoBehaviour
         for (int i = 0; i < deathBurgers.Count; i++)
         {
             deathBurgers[i].transform.position += burgerVectors[i] * Time.deltaTime;
-            rotation += (Time.deltaTime * 20);
+            rotation += (Time.deltaTime * 80);
             deathBurgers[i].transform.eulerAngles = Vector3.forward * rotation;
             burgerVectors[i] += (gravity * Time.deltaTime);
 
@@ -163,26 +166,33 @@ public class EnemyManager : MonoBehaviour
             {
                 if (bossEntrance && cowList[i].transform.position.y > 4)
                 {
-                    movementList[i] = new Vector3(0, -3, 0);
+                    movementList[i] = new Vector3(0, -2, 0);
                 }
                 else if (bossEntrance && cowList[i].transform.position.y <= 4)
                 {
-                    movementList[i] = new Vector3(-3, 0, 0);
+                    movementList[i] = new Vector3(-2, 0, 0);
                     bossEntrance = false;
                 }
-                if (cowList[i].transform.position.x < -2.5f)
+                if (cowList[i].transform.position.x < -2.0f)
                 {
-                    movementList[i] = new Vector3(3, 0, 0);
+                    movementList[i] = new Vector3(2, 0, 0);
+                    cowList[i].GetComponent<SpriteRenderer>().flipX = !(cowList[i].GetComponent<SpriteRenderer>().flipX);
                 }
-                else if (cowList[i].transform.position.x > 2.5f)
+                else if (cowList[i].transform.position.x > 2.0f)
                 {
-                    movementList[i] = new Vector3(-3, 0, 0);
+                    movementList[i] = new Vector3(-2, 0, 0);
+                    cowList[i].GetComponent<SpriteRenderer>().flipX = !(cowList[i].GetComponent<SpriteRenderer>().flipX);
                 }
             }
 
-            if (cowList[i].transform.position.y < -7.0f ||
-                cowList[i].transform.position.x < -4.0f ||
-                cowList[i].transform.position.x > 4.0f)
+            if (cowList[i].transform.position.x < -1.5f || //bounces cows off edges of screen
+                cowList[i].transform.position.x > 1.5f)
+            {
+                movementList[i] = new Vector3(movementList[i].x * -1.0f, movementList[i].y, movementList[i].z);
+                cowList[i].GetComponent<SpriteRenderer>().flipX = !(cowList[i].GetComponent<SpriteRenderer>().flipX);
+            }
+
+            if (cowList[i].transform.position.y < -7.0f)
             {
                 DestroyEnemy(i, false);
                 i--;
@@ -231,6 +241,7 @@ public class EnemyManager : MonoBehaviour
         if (healthLost)
         {
             health--;
+            SpawnWarning(player.transform.position.x, player.transform.position.y, 2);
         }
 
         if (health <= 0)
@@ -321,7 +332,7 @@ public class EnemyManager : MonoBehaviour
                 //rad: 0%
 
                 spawnRates = new List<float> { 0.5f, 0.75f, 0.9f, 1.0f, 0.0f };
-                InvokeRepeating("SpawnNewEnemy", 0, 4.0f);
+                InvokeRepeating("SpawnNewEnemy", 0, 3.0f);
                 break;
             case 3:
                 //cow: 40%
@@ -332,7 +343,7 @@ public class EnemyManager : MonoBehaviour
                 //rad: 0%
 
                 spawnRates = new List<float> { 0.4f, 0.6f, 0.8f, 0.9f, 1.0f };
-                InvokeRepeating("SpawnNewEnemy", 0, 8.0f);
+                InvokeRepeating("SpawnNewEnemy", 0, 6.0f);
                 break;
             case 4:
                 //cow: 30%
@@ -354,7 +365,7 @@ public class EnemyManager : MonoBehaviour
                 //rad: 20%
 
                 spawnRates = new List<float> { 0.1f, 0.25f, 0.45f, 0.65f, 0.8f };
-                InvokeRepeating("SpawnNewEnemy", 0, 12.00f);
+                InvokeRepeating("SpawnNewEnemy", 0, 10.00f);
                 break;
             case 6:
                 //cow: 10%
@@ -367,7 +378,7 @@ public class EnemyManager : MonoBehaviour
                 //boss: 100%
 
                 spawnRates = new List<float> { 0.1f, 0.3f, 0.6f, 0.75f, 0.85f };
-                InvokeRepeating("SpawnNewEnemy", 0, 25.00f);
+                InvokeRepeating("SpawnNewEnemy", 0, 15.00f);
                 SpawnBoss();
                 break;
         }
@@ -397,25 +408,25 @@ public class EnemyManager : MonoBehaviour
 
     public void CheckTimer(float currentTimer)
     {
-        if (spawnCheck[0] && currentTimer <= 240.0f) //starts wave 2
+        if (spawnCheck[0] && currentTimer <= 130.0f) //starts wave 2
         {
             spawnCheck[0] = false;
             currentWave++;
             UpdateDifficulty(currentWave);
         }
-        else if (spawnCheck[1] && currentTimer <= 180.0f) //starts wave 3
+        else if (spawnCheck[1] && currentTimer <= 100.0f) //starts wave 3
         {
             spawnCheck[1] = false;
             currentWave++;
             UpdateDifficulty(currentWave);
         }
-        else if (spawnCheck[2] && currentTimer <= 120.0f) //starts wave 4
+        else if (spawnCheck[2] && currentTimer <= 60.0f) //starts wave 4
         {
             spawnCheck[2] = false;
             currentWave++;
             UpdateDifficulty(currentWave);
         }
-        else if (spawnCheck[3] && currentTimer <= 60.0f) //starts wave 5
+        else if (spawnCheck[3] && currentTimer <= 30.0f) //starts wave 5
         {
             spawnCheck[3] = false;
             currentWave++;
@@ -441,12 +452,12 @@ public class EnemyManager : MonoBehaviour
         fireRate.Add(1.25f);
         currentFire.Add(-2.0f);
         movementSpeed.Add(1f);
-        bulletSpeed.Add(6.0f);
+        bulletSpeed.Add(3.0f);
     }
 
     public void SpawnNewEnemy()
     {
-        float posX = Random.Range(-2.5f, 2.5f);
+        float posX = Random.Range(-1.5f, 1.5f);
         float posY = Random.Range(5.5f, 6.0f);
 
         float selectCow = Random.value; //Old values: 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1.0f
@@ -455,67 +466,97 @@ public class EnemyManager : MonoBehaviour
         {
             cowList.Add(Instantiate(cow, new Vector3(posX, posY, 0), Quaternion.identity)); //creates cow, chooses random location offscreen
             cowNames.Add("cow");
-            movementList.Add(new Vector3(Random.Range(-1.0f, 1.0f), Random.Range(-3.0f, -2.0f), 0)); //chooses vector of movement. Increase y to give bigger angles
+            movementList.Add(new Vector3(Random.Range(-1.0f, 1.0f), Random.Range(-4.0f, -2.0f), 0)); //chooses vector of movement. Increase y to give bigger angles
             cowHealth.Add(1); //Each bullet does two damage
             fireRate.Add(Random.Range(3.0f, 5.0f)); //How frequently each cow shoots
             currentFire.Add(2.0f); //How quickly the cow starts to shoot
             movementSpeed.Add(0.5f); //The multiplier for speed
-            bulletSpeed.Add(4.75f); //The speed of the enemy's bullets
+            bulletSpeed.Add(4.00f); //The speed of the enemy's bullets
+
+            if (movementList[movementList.Count - 1].x > 0)
+            {
+                cowList[movementList.Count - 1].GetComponent<SpriteRenderer>().flipX = true;
+            }
         }
         else if (selectCow < spawnRates[1]) //Spawns a soldier cow
         {
             cowList.Add(Instantiate(cowsoldier, new Vector3(posX, posY, 0), Quaternion.identity));
             cowNames.Add("soldier");
-            movementList.Add(new Vector3(Random.Range(-0.75f, 0.75f), Random.Range(-3.25f, -2.5f), 0));
+            movementList.Add(new Vector3(Random.Range(-0.75f, 0.75f), Random.Range(-4.25f, -2.5f), 0));
             cowHealth.Add(3);
             fireRate.Add(Random.Range(1f, 4.0f));
             currentFire.Add(2.0f);
             movementSpeed.Add(1.0f);
-            bulletSpeed.Add(4.0f);
+            bulletSpeed.Add(4.25f);
+
+            if (movementList[movementList.Count - 1].x > 0)
+            {
+                cowList[movementList.Count - 1].GetComponent<SpriteRenderer>().flipX = true;
+            }
         }
         else if (selectCow < spawnRates[2]) //Spawns a commando cow
         {
             cowList.Add(Instantiate(cowcommando, new Vector3(posX, posY, 0), Quaternion.identity));
             cowNames.Add("commando");
-            movementList.Add(new Vector3(Random.Range(-0.5f, 0.5f), Random.Range(-3.5f, -3.0f), 0));
+            movementList.Add(new Vector3(Random.Range(-0.5f, 0.5f), Random.Range(-4.5f, -3.0f), 0));
             cowHealth.Add(5);
             fireRate.Add(Random.Range(0.5f, 2.0f));
             currentFire.Add(2.0f);
             movementSpeed.Add(1.5f);
-            bulletSpeed.Add(4.25f);
+            bulletSpeed.Add(4.5f);
+
+            if (movementList[movementList.Count - 1].x > 0)
+            {
+                cowList[movementList.Count - 1].GetComponent<SpriteRenderer>().flipX = true;
+            }
         }
         else if (selectCow < spawnRates[3]) //Spawns a scout cow
         {
             cowList.Add(Instantiate(cowscout, new Vector3(posX, posY, 0), Quaternion.identity));
             cowNames.Add("scout");
-            movementList.Add(new Vector3(Random.Range(-1.0f, 1.0f), Random.Range(-5.0f, -3.0f), 0));
+            movementList.Add(new Vector3(Random.Range(-1.0f, 1.0f), Random.Range(-6.0f, -3.0f), 0));
             cowHealth.Add(1);
             fireRate.Add(1.5f);
             currentFire.Add(0.0f);
             movementSpeed.Add(0.2f);
             bulletSpeed.Add(2.0f);
+
+            if (movementList[movementList.Count - 1].x > 0)
+            {
+                cowList[movementList.Count - 1].GetComponent<SpriteRenderer>().flipX = true;
+            }
         }
         else if (selectCow < spawnRates[4]) //Spawns an armor cow
         {
             cowList.Add(Instantiate(cowarmor, new Vector3(posX, posY, 0), Quaternion.identity));
             cowNames.Add("armor");
-            movementList.Add(new Vector3(Random.Range(-0.25f, 0.25f), -2.0f, 0));
+            movementList.Add(new Vector3(Random.Range(-0.25f, 0.25f), -3.0f, 0));
             cowHealth.Add(13);
             fireRate.Add(Random.Range(1.0f, 3.0f));
             currentFire.Add(0.75f);
             movementSpeed.Add(0.5f);
-            bulletSpeed.Add(0.1f);
+            bulletSpeed.Add(2.5f);
+
+            if (movementList[movementList.Count - 1].x > 0)
+            {
+                cowList[movementList.Count - 1].GetComponent<SpriteRenderer>().flipX = true;
+            }
         }
         else //Spawns a radioactive cow
         {
             cowList.Add(Instantiate(cowradioactive, new Vector3(posX, posY, 0), Quaternion.identity));
             cowNames.Add("radioactive");
-            movementList.Add(new Vector3(Random.Range(-1.0f, 1.0f), Random.Range(-5.0f, -3.0f), 0));
+            movementList.Add(new Vector3(Random.Range(-1.0f, 1.0f), Random.Range(-6.0f, -3.0f), 0));
             cowHealth.Add(5);
             fireRate.Add(4.0f);
             currentFire.Add(2.5f);
             movementSpeed.Add(0.75f);
             bulletSpeed.Add(2.5f);
+
+            if (movementList[movementList.Count - 1].x > 0)
+            {
+                cowList[movementList.Count - 1].GetComponent<SpriteRenderer>().flipX = true;
+            }
         }
         //  else //Spawns a medic cow
         //{
@@ -577,7 +618,7 @@ public class EnemyManager : MonoBehaviour
     public void SpawnHamburger(float x, float y)
     {
         deathBurgers.Add(Instantiate(burger, new Vector3(x, y, 0), Quaternion.identity));
-        burgerVectors.Add(new Vector3(0, 5, 0));
+        burgerVectors.Add(new Vector3(Random.Range(-3.0f, 3.0f), 5, 0));
     }
 
     public void SpawnWarning(float x, float y, int i)
@@ -589,6 +630,9 @@ public class EnemyManager : MonoBehaviour
                 break;
             case 1:
                 warningList.Add(Instantiate(chargeNote, new Vector3(x, y, -1), Quaternion.identity));
+                break;
+            case 2: 
+                warningList.Add(Instantiate(damagedNote, new Vector3(x, y, -1), Quaternion.identity));
                 break;
         }
 
