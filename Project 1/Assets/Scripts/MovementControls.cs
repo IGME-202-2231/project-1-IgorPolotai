@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -26,7 +27,6 @@ public class MovementControls : MonoBehaviour
     GameObject infoScreen;
 
     GameObject info = null;
-    bool check = true;
 
     [SerializeField]
     BulletManager bulletManager;
@@ -93,9 +93,9 @@ public class MovementControls : MonoBehaviour
         {
             objectPosition.x = -1.8f;
         }
-        if (objectPosition.y < -4.7f)
+        if (objectPosition.y < -4.4f)
         {
-            objectPosition.y = -4.7f;
+            objectPosition.y = -4.4f;
         }
         if (objectPosition.x > 1.8f)
         {
@@ -136,15 +136,13 @@ public class MovementControls : MonoBehaviour
     {
         //shooty stuff goes here
 
-        if (check && Time.timeScale == 0)
+        if (Time.timeScale == 0 && enemyManager.bossEntrance)
         {
             if (info != null)
             {
                 Destroy(info);
-
             }
 
-            check = false;
             Time.timeScale = 1;
             //enemyManager.Reset();
         }
@@ -156,10 +154,21 @@ public class MovementControls : MonoBehaviour
 
     public void Fire2(InputAction.CallbackContext context)
     {
-        //shooty stuff goes here
+        //chareg
         if (context.performed)
         {
             enemyManager.UseCharge();
+        }
+    }
+
+    public void Restart(InputAction.CallbackContext context)
+    {
+        //restart
+        if (context.performed && Time.timeScale == 0)
+        {
+            objectPosition.x = 0.0f;
+            objectPosition.y = -4.4f;
+            enemyManager.Reset();
         }
     }
 

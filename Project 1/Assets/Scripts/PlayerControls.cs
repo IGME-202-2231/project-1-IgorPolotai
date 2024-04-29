@@ -62,6 +62,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Restart"",
+                    ""type"": ""Button"",
+                    ""id"": ""60ec1817-fe7d-4a9f-84e4-237ffa297b8a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -233,7 +242,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""143bb1cd-cc10-4eca-a2f0-a3664166fe91"",
-                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""path"": ""<XInputController>/buttonWest"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
@@ -293,6 +302,39 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Fire2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4b04981e-6174-46fc-8ecf-c855326e0eec"",
+                    ""path"": ""<XInputController>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Fire2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d8e0f670-3d90-49e0-8400-de5894e3a152"",
+                    ""path"": ""<Keyboard>/#(R)"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Restart"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""af017738-7627-4b49-a713-753050cd7d7b"",
+                    ""path"": ""<XInputController>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Restart"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -884,6 +926,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
         m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
         m_Player_Fire2 = m_Player.FindAction("Fire2", throwIfNotFound: true);
+        m_Player_Restart = m_Player.FindAction("Restart", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -961,6 +1004,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Look;
     private readonly InputAction m_Player_Fire;
     private readonly InputAction m_Player_Fire2;
+    private readonly InputAction m_Player_Restart;
     public struct PlayerActions
     {
         private @PlayerControls m_Wrapper;
@@ -969,6 +1013,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @Look => m_Wrapper.m_Player_Look;
         public InputAction @Fire => m_Wrapper.m_Player_Fire;
         public InputAction @Fire2 => m_Wrapper.m_Player_Fire2;
+        public InputAction @Restart => m_Wrapper.m_Player_Restart;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -990,6 +1035,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Fire2.started += instance.OnFire2;
             @Fire2.performed += instance.OnFire2;
             @Fire2.canceled += instance.OnFire2;
+            @Restart.started += instance.OnRestart;
+            @Restart.performed += instance.OnRestart;
+            @Restart.canceled += instance.OnRestart;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -1006,6 +1054,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Fire2.started -= instance.OnFire2;
             @Fire2.performed -= instance.OnFire2;
             @Fire2.canceled -= instance.OnFire2;
+            @Restart.started -= instance.OnRestart;
+            @Restart.performed -= instance.OnRestart;
+            @Restart.canceled -= instance.OnRestart;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1192,6 +1243,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnLook(InputAction.CallbackContext context);
         void OnFire(InputAction.CallbackContext context);
         void OnFire2(InputAction.CallbackContext context);
+        void OnRestart(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

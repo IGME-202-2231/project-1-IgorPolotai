@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System.Collections.Specialized;
 
 public class EnemyManager : MonoBehaviour
 {
@@ -82,7 +83,7 @@ public class EnemyManager : MonoBehaviour
     List<bool> spawnCheck = new List<bool> { true, true, true, true, true };
     float gameTimer = 180.0f;
     int currentWave = 1; //STARTS AT 1
-    bool bossEntrance = true;
+    public bool bossEntrance = true;
 
     TextMeshProUGUI healthText;
     TextMeshProUGUI resultText;
@@ -170,8 +171,8 @@ public class EnemyManager : MonoBehaviour
                 }
                 else if (bossEntrance && cowList[i].transform.position.y <= 4)
                 {
-                    movementList[i] = new Vector3(-2, 0, 0);
                     bossEntrance = false;
+                    movementList[i] = new Vector3(-2, 0, 0);
                 }
                 if (cowList[i].transform.position.x < -2.0f)
                 {
@@ -247,20 +248,28 @@ public class EnemyManager : MonoBehaviour
         if (health <= 0)
         {
             Time.timeScale = 0;
-            resultText.text = "You Lose";
+            resultText.text = "You Lose. \nPress White to Restart";
         }
 
         if (charge >= 100)
         {
-            healthText.text = "Health: " + health + "\n" +
-                   "Charge: Ready!" + "\n"+
-                   "Score: " + score;
+            /*            healthText.text = "Health: " + health + "\n" +
+                               "Charge: Ready!" + "\n"+
+                               "Score: " + score + "\n"+
+                               "Wave: " + currentWave;*/
+            healthText.text = "Health: " + health +
+                   " - Score: " + score +
+                   " - Charge: Ready!";
         }
         else
         {
-            healthText.text = "Health Lost: " + health + "\n" +
-                              "Charge: " + charge + "%" + "\n" +
-                              "Score: " + score;
+            /*            healthText.text = "Health Lost: " + health + "\n" +
+                                          "Charge: " + charge + "%" + "\n" +
+                                          "Score: " + score + "\n" +
+                                          "Wave: " + currentWave;*/
+            healthText.text = "Health: " + health +
+                   " - Score: " + score +
+                   " - Charge: " + charge + " % ";
         }
 
     }
@@ -442,7 +451,7 @@ public class EnemyManager : MonoBehaviour
 
     public void SpawnBoss()
     {
-        float posX = Random.Range(-2.5f, 2.5f);
+        float posX = Random.Range(-1.0f, 1.0f);
         float posY = Random.Range(5.5f, 6.0f);
 
         cowList.Add(Instantiate(cowboss, new Vector3(posX, posY, 0), Quaternion.identity));
@@ -742,6 +751,8 @@ public class EnemyManager : MonoBehaviour
 
     public void DestroyEnemy(int i, bool spawnBurgers)
     {
+        if (cowList.Count < 1) return;
+
         if (spawnBurgers)
         {
             SpawnHamburger(cowList[i].transform.position.x, cowList[i].transform.position.y);
@@ -749,11 +760,12 @@ public class EnemyManager : MonoBehaviour
 
         if (cowNames[i] == "boss")
         {
+            resultText.text = "You Win!!! \nPress White to Restart";
             Time.timeScale = 0;
-            resultText.text = "You Win!!!";
+            Time.timeScale = 0; 
         }
 
-        if (cowList[i] != null && cowNames[i] == "medic")
+        /*if (cowList[i] != null && cowNames[i] == "medic")
         {
             for (int j = 0; j < cowList.Count; j++)
             {
@@ -783,10 +795,10 @@ public class EnemyManager : MonoBehaviour
                     j = cowList.Count;
                 }
             }
-        }
+        }*//*
 
-        if (medicCount > 0 && cowList[i].GetComponent<SpriteInfo>().CurrentShield != null)
-        {
+        //if (medicCount > 0 && cowList[i].GetComponent<SpriteInfo>().CurrentShield != null)
+        //{
             //  GameObject temp = null;
             //  Vector2 min = new Vector2(1000, 1000);
             //
@@ -807,7 +819,7 @@ public class EnemyManager : MonoBehaviour
             //  shieldList.RemoveAt(index);
             //  shieldVectors.RemoveAt(index);
 
-            for (int k = 0; k < shieldList.Count; k++)
+*//*            for (int k = 0; k < shieldList.Count; k++)
             {
                 if (cowList[i].GetComponent<SpriteInfo>().CurrentShield == shieldList[k].GetComponent<SpriteInfo>().CurrentShield)
                 {
@@ -818,7 +830,7 @@ public class EnemyManager : MonoBehaviour
 
             SpawnShield();
 
-        }
+        }*/
 
         Destroy(cowList[i]);
         cowList.RemoveAt(i);
@@ -836,20 +848,45 @@ public class EnemyManager : MonoBehaviour
         resultText.text = "";
         score = 0;
         charge = 100;
-        gameTimer = 300.0f;
+        gameTimer = 180.0f;
         currentWave = 1;
         bossEntrance = true;
         displayCharge = true;
         health = 10;
         rotation = 0.0f;
+        spawnCheck = new List<bool> { true, true, true, true, true };
 
-        foreach (GameObject item in cowList)
+        /* player.transform.position = new Vector3(0.0f, -4.4f, 0.0f);*/
+
+        int cowCount = cowList.Count;
+        for (int i = 0; i < cowCount; i++)
         {
-            DestroyEnemy(0, false);
+            // Destroy the sprite renderer component
+            Destroy(cowList[i].GetComponent<SpriteRenderer>());
+
+            // Destroy the game object
+            Destroy(cowList[i]);
         }
+
+        cowList.Clear(); // Clear the list after destroying all game objects
+
+        // Clear other lists as well
+        cowNames.Clear();
+        movementList.Clear();
+        cowHealth.Clear();
+        movementSpeed.Clear();
+        fireRate.Clear();
+        currentFire.Clear();
+        bulletSpeed.Clear();
 
         bulletManager.DestroyAllBullets();
 
+        Time.timeScale = 1;
+
+        CancelInvoke();
+
+        UpdateUI(false);
+        UpdateDifficulty(currentWave);
     }
 
 }
